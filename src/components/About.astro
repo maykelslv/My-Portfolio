@@ -1,0 +1,284 @@
+---
+// About.astro — Enhanced with word reveal and editorial design
+const language = ["Python", "Java", "HTML", "CSS", "PHP"];
+const framework = ["Bootstrap", "TailwindCSS", "Laravel", "Astro", "APIs"];
+const softwareApps = [
+  "Cisco Packet Tracer",
+  "Adobe After Effects",
+  "Adobe Illustrator",
+  "Adobe Premiere Pro",
+  "Adobe Photoshop",
+  "Figma",
+  "Aseprite",
+  "Alight Motion",
+  "Microsoft Office",
+];
+const aboutParagraphs = [
+  "I'm a fourth-year BSIT student at Pamantasan ng Lungsod ng Valenzuela with a strong focus on bridging hardware and software. My primary expertise lies in developing integrated IoT systems paired with robust backends and clean user interfaces.",
+  "Recently, my research and development efforts have centered on disaster risk reduction. I've been engineering SILAG, a smart flood detection integrated system using Raspberry Pi and microcontrollers, managed through a Hybrid Incremental-Kanban workflow.",
+  "When I'm not wiring sensors, building APIs, or configuring databases, you can usually find me exploring the history of local Filipino businesses, cinematic motovlogging, or diving into the philosophical origins of mathematics.",
+];
+---
+
+<section id="about" class="relative py-32 px-8 md:px-24 bg-bg overflow-hidden">
+  <!-- Background ambient -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden">
+    <div class="about-glow about-glow-1"></div>
+    <div class="about-glow about-glow-2"></div>
+  </div>
+
+  <div class="max-w-6xl mx-auto relative z-10">
+    <!-- Section marker -->
+    <div class="section-marker mb-6 fade-up about-animate">
+      <span>01 / About</span>
+    </div>
+
+    <div class="mb-16 fade-up about-animate">
+      <h2
+        class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 font-display"
+      >
+        <span class="text-text">About</span>
+        <span class="text-accent">Me</span>
+      </h2>
+      <div class="about-section-line w-24 h-px bg-accent mt-4"></div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-16">
+      <!-- Text column (3/5) -->
+      <div class="lg:col-span-3 space-y-8">
+        {
+          aboutParagraphs.map((para, idx) => (
+            <p
+              class="about-paragraph text-lg md:text-xl leading-relaxed"
+              data-paragraph-index={idx}
+            >
+              {para.split(" ").map((word) => (
+                <span class="word">{word}</span>
+              ))}
+            </p>
+          ))
+        }
+      </div>
+
+      <!-- Tech stack column (2/5) -->
+      <div class="lg:col-span-2">
+        <div class="sticky top-24 space-y-8 tech-sidebar-container">
+          <h3
+            class="text-lg font-semibold text-text mb-2 fade-up about-animate font-display tracking-wide"
+          >
+            Core Technologies
+          </h3>
+
+          <!-- Category 1: Languages -->
+          <div class="space-y-3">
+            <h4
+              class="text-xs font-bold tracking-[0.2em] uppercase text-accent font-display"
+            >
+              Language
+            </h4>
+            <div class="flex flex-wrap gap-2">
+              {
+                language.map((tech) => (
+                  <span class="tech-pill px-4 py-2 bg-bg-elevated border border-border text-text-muted rounded-full text-xs font-medium hover:border-accent hover:text-accent transition-all duration-400">
+                    {tech}
+                  </span>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Category 2: Frameworks -->
+          <div class="space-y-3">
+            <h4
+              class="text-xs font-bold tracking-[0.2em] uppercase text-accent font-display"
+            >
+              Framework
+            </h4>
+            <div class="flex flex-wrap gap-2">
+              {
+                framework.map((tech) => (
+                  <span class="tech-pill px-4 py-2 bg-bg-elevated border border-border text-text-muted rounded-full text-xs font-medium hover:border-accent hover:text-accent transition-all duration-400">
+                    {tech}
+                  </span>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Category 3: Software Applications -->
+          <div class="space-y-3">
+            <h4
+              class="text-xs font-bold tracking-[0.2em] uppercase text-accent font-display"
+            >
+              Software Application
+            </h4>
+            <div class="flex flex-wrap gap-2">
+              {
+                softwareApps.map((tech) => (
+                  <span class="tech-pill px-4 py-2 bg-bg-elevated border border-border text-text-muted rounded-full text-xs font-medium hover:border-accent hover:text-accent transition-all duration-400">
+                    {tech}
+                  </span>
+                ))
+              }
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="grid grid-cols-2 gap-6 pt-6 border-t border-border/40">
+            <div class="stat-item fade-up about-animate">
+              <span
+                class="text-2xl font-bold text-text font-display block leading-tight"
+                >BSIT Student</span
+              >
+              <span class="text-xs text-text-muted mt-1 block"
+                >@ Pamantasan ng Lungsod ng Valenzuela</span
+              >
+            </div>
+            <div class="stat-item fade-up about-animate">
+              <span
+                class="text-2xl font-bold text-text font-display block leading-tight"
+                >UI/UX Designer</span
+              >
+              <span class="text-xs text-text-muted mt-1 block"
+                >Aspiring Developer</span
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  /* Word reveal styling */
+  .about-paragraph .word {
+    display: inline-block;
+    margin-right: 0.3em;
+    color: var(--color-text-muted);
+    transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: color;
+  }
+
+  .about-paragraph .word.active {
+    color: var(--color-text-secondary);
+  }
+
+  /* Tech pills entry configuration */
+  .tech-pill {
+    opacity: 0;
+    transform: translateY(15px);
+    will-change: transform, opacity;
+  }
+
+  /* Ambient glows */
+  .about-glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.04;
+  }
+
+  .about-glow-1 {
+    width: 400px;
+    height: 400px;
+    background: var(--color-accent);
+    top: 10%;
+    right: -100px;
+  }
+
+  .about-glow-2 {
+    width: 300px;
+    height: 300px;
+    background: var(--color-accent-light);
+    bottom: 15%;
+    left: -80px;
+  }
+
+  /* Section line */
+  .about-section-line {
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Fade up elements
+  gsap.utils.toArray<HTMLElement>(".about-animate").forEach((el) => {
+    gsap.fromTo(
+      el,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      },
+    );
+  });
+
+  // Section line draw
+  gsap.to(".about-section-line", {
+    scaleX: 1,
+    duration: 1.2,
+    ease: "power2.inOut",
+    scrollTrigger: {
+      trigger: ".about-section-line",
+      start: "top 80%",
+      toggleActions: "play none none none",
+    },
+  });
+
+  // Word-by-word color reveal for about paragraphs
+  document.querySelectorAll(".about-paragraph").forEach((para) => {
+    const words = para.querySelectorAll(".word");
+
+    ScrollTrigger.create({
+      trigger: para,
+      start: "top 80%",
+      end: "bottom 30%",
+      scrub: 0.5,
+      onUpdate: (self) => {
+        const progress = self.progress;
+        const totalWords = words.length;
+        const activeCount = Math.floor(progress * totalWords);
+
+        words.forEach((word, i) => {
+          if (i <= activeCount) {
+            word.classList.add("active");
+          } else {
+            word.classList.remove("active");
+          }
+        });
+      },
+    });
+  });
+
+  // Fixed tech pill stagger point to scan the whole grid wrapper container smoothly
+  gsap.to(".tech-pill", {
+    opacity: 1,
+    y: 0,
+    duration: 0.5,
+    ease: "power2.out",
+    stagger: 0.04,
+    scrollTrigger: {
+      trigger: ".tech-sidebar-container",
+      start: "top 85%",
+      toggleActions: "play none none none",
+    },
+  });
+</script>

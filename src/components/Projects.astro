@@ -1,0 +1,341 @@
+---
+// src/components/Projects.astro — Recent Works (3 cards, vertical, juanmora-style scroll reveals)
+
+interface Project {
+  title: string;
+  role: string;
+  description: string;
+  tags: string[];
+  image?: string;
+  video?: string;
+}
+
+const recentProjects: Project[] = [
+  {
+ title: "SILAG IoT",
+    role: "Technical Documentation/IoT Developer",
+    description:
+      "An integrated smart inundation-level alert gateway utilizing Raspberry Pi and microcontrollers, developed under a Hybrid Incremental-Kanban workflow.",
+    tags: [
+      "Raspberry Pi",
+      "ESP32",
+      "Ultrasonic Sensor",
+      "LoRa-WAN",
+      "Hardware Integration",
+    ],
+    image: "/IoT.jpg",
+  },
+  {
+    title: "Multimedia Motion Graphics Project",
+    role: "Motion Graphics Designer",
+    description:
+      "A creative multimedia composition exploring vector animations, visual storytelling, and smooth keyframe interpolation techniques.",
+    tags: ["Adobe After Effects", "Adobe Illustrator"],
+    video: "/Motion-Minds.mp4",
+  },
+  {
+     title: "JMJ Events Place and Catering Website",
+    role: "Main Developer",
+    description:
+      "A feature-rich booking and management platform featuring menu-driven selection structures, secure client record storage, and automated reporting.",
+    tags: ["HTML", "CSS", "JavaScript", "MongoDB"],
+    video: "/JMJ-Website-Demo.mp4",
+  },
+];
+---
+
+<section id="recent-works" class="relative bg-bg text-text overflow-hidden py-32 px-8 md:px-24">
+
+  <!-- Background ambient -->
+  <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+    <div class="absolute w-[400px] h-[400px] bg-accent rounded-full filter blur-[120px] opacity-[0.03] top-[-50px] right-[-50px]"></div>
+    <div class="absolute w-[300px] h-[300px] bg-accent-light rounded-full filter blur-[100px] opacity-[0.03] bottom-[-100px] left-[-50px]"></div>
+  </div>
+
+  <div class="relative z-10 max-w-6xl mx-auto">
+
+    <!-- Section header -->
+    <div class="section-marker mb-6 fade-up projects-animate">
+      <span>02 / Work</span>
+    </div>
+
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-20">
+      <h2 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight font-display fade-up projects-animate">
+        Recent <span class="text-accent">Works</span>
+      </h2>
+      <a 
+        href="/projects" 
+        class="magnetic inline-flex items-center gap-2 px-6 py-3 border border-border text-text-muted text-sm font-medium rounded-full hover:border-accent hover:text-accent transition-all duration-300 fade-up projects-animate self-start md:self-auto"
+      >
+        View All Projects
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        </svg>
+      </a>
+    </div>
+
+    <div class="projects-section-line w-full h-px bg-border mb-20"></div>
+
+    <!-- Project cards — stacked vertically, juanmora-style -->
+    <div class="space-y-24 md:space-y-32">
+      {
+        recentProjects.map((project, index) => (
+          <article class="project-card group" data-card-index={index}>
+            <div class="project-card-inner grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+              
+              <!-- Image (takes 7/12 on desktop) -->
+              <div class={`lg:col-span-7 ${index % 2 === 1 ? 'lg:order-2' : ''}`}>
+                <div class="project-image-wrapper relative overflow-hidden rounded-2xl bg-[#111] aspect-[16/10]">
+                  {project.video ? (
+                    <video
+                      autoplay
+                      loop
+                      muted
+                      playsinline
+                      class="project-img w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-700 ease-out will-change-transform"
+                    >
+                      <source src={project.video} type="video/mp4" />
+                    </video>
+                  ) : (
+                    <img
+                      src={project.image}
+                      alt={project.title}
+                      class="project-img w-full h-full object-cover opacity-70 group-hover:opacity-100 transition-opacity duration-700 ease-out will-change-transform"
+                      loading="lazy"
+                    />
+                  )}
+                  <!-- Gradient overlay -->
+                  <div class="absolute inset-0 bg-gradient-to-t from-bg/40 via-transparent to-transparent opacity-60 group-hover:opacity-30 transition-opacity duration-500"></div>
+                  <!-- Number overlay -->
+                  <div class="absolute bottom-6 right-6">
+                    <span class="text-6xl md:text-8xl font-bold text-transparent project-number opacity-10 group-hover:opacity-30 transition-opacity duration-500 font-display">
+                      0{index + 1}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Content (takes 5/12 on desktop) -->
+              <div class={`lg:col-span-5 ${index % 2 === 1 ? 'lg:order-1' : ''}`}>
+                <div class="space-y-5">
+                  <p class="text-xs text-accent-light tracking-[0.25em] uppercase font-medium">
+                    {project.role}
+                  </p>
+                  <h3 class="text-3xl md:text-4xl lg:text-5xl font-bold text-text group-hover:text-accent transition-colors duration-400 font-display leading-tight">
+                    {project.title}
+                  </h3>
+                  <p class="text-base md:text-lg text-text-secondary leading-relaxed">
+                    {project.description}
+                  </p>
+                  <div class="flex flex-wrap gap-2 pt-2">
+                    {project.tags.map((tag) => (
+                      <span class="px-4 py-1.5 bg-bg-elevated text-text-muted text-xs font-medium rounded-full border border-border/50 group-hover:border-border transition-colors duration-300">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </article>
+        ))
+      }
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .project-number {
+    -webkit-text-stroke: 1.5px var(--color-text);
+  }
+  .group:hover .project-number {
+    -webkit-text-stroke: 1.5px var(--color-accent);
+  }
+
+  /* Section line draw */
+  .projects-section-line {
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  /* Card reveal initial state — set by GSAP */
+  .project-card-inner {
+    will-change: transform, opacity;
+  }
+
+  /* Image scale on hover */
+  .project-image-wrapper:hover .project-img {
+    transform: scale(1.04);
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease-out;
+  }
+
+  .project-img {
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.7s ease-out;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Section header fade ups
+  gsap.utils.toArray<HTMLElement>(".projects-animate").forEach((el) => {
+    gsap.fromTo(
+      el,
+      { opacity: 0, y: 50 },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: el,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      },
+    );
+  });
+
+  // Section line draw
+  gsap.to(".projects-section-line", {
+    scaleX: 1,
+    duration: 1.5,
+    ease: "power2.inOut",
+    scrollTrigger: {
+      trigger: ".projects-section-line",
+      start: "top 80%",
+      toggleActions: "play none none none",
+    },
+  });
+
+  // Each project card — enhanced scroll reveal
+  gsap.utils.toArray<HTMLElement>(".project-card").forEach((card) => {
+    const inner = card.querySelector(".project-card-inner") as HTMLElement;
+    const image = card.querySelector(".project-image-wrapper") as HTMLElement;
+    const img = card.querySelector(".project-img") as HTMLElement;
+    const role = card.querySelector("p.text-xs") as HTMLElement;
+    const title = card.querySelector("h3") as HTMLElement;
+    const desc = card.querySelector("p.text-base, p.text-lg") as HTMLElement;
+    const tagsWrap = card.querySelector(".flex.flex-wrap") as HTMLElement;
+    const tags = card.querySelectorAll(".flex.flex-wrap > span");
+
+    if (!inner) return;
+
+    // Card container: scale up + fade in
+    gsap.fromTo(
+      inner,
+      { opacity: 0, y: 120, scale: 0.88 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 1.4,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: card,
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      },
+    );
+
+    // Image parallax — moves slower than the card
+    if (img) {
+      gsap.fromTo(
+        img,
+        { y: -50, scale: 1.12 },
+        {
+          y: 50,
+          scale: 1,
+          ease: "none",
+          scrollTrigger: {
+            trigger: card,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 0.6,
+          },
+        },
+      );
+    }
+
+    // Image wrapper clip reveal
+    if (image) {
+      gsap.fromTo(
+        image,
+        { clipPath: "inset(20% 0% 20% 0%)" },
+        {
+          clipPath: "inset(0% 0% 0% 0%)",
+          duration: 1.6,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 82%",
+            toggleActions: "play none none none",
+          },
+        },
+      );
+    }
+
+    // Staggered text content reveals
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: card,
+        start: "top 78%",
+        toggleActions: "play none none none",
+      },
+    });
+
+    if (role) {
+      tl.fromTo(
+        role,
+        { opacity: 0, x: -30 },
+        { opacity: 1, x: 0, duration: 0.7, ease: "power2.out" },
+        0.2,
+      );
+    }
+
+    if (title) {
+      tl.fromTo(
+        title,
+        { opacity: 0, y: 40, skewY: 2 },
+        { opacity: 1, y: 0, skewY: 0, duration: 0.9, ease: "power3.out" },
+        0.35,
+      );
+    }
+
+    if (desc) {
+      tl.fromTo(
+        desc,
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+        0.55,
+      );
+    }
+
+    if (tags.length > 0) {
+      tl.fromTo(
+        tags,
+        { opacity: 0, y: 15, scale: 0.9 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.5,
+          ease: "back.out(1.4)",
+          stagger: 0.06,
+        },
+        0.7,
+      );
+    }
+  });
+</script>
+

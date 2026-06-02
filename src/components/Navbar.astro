@@ -1,0 +1,202 @@
+---
+const navLinks = [
+  { label: "About", href: "#about" },
+  { label: "Projects", href: "/projects" },
+  { label: "Contact", href: "#contact" },
+];
+---
+
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500" style="opacity: 0; transform: translateY(-20px);">
+  
+  <div class="relative z-50 w-full px-8 py-5 flex items-center justify-between">
+    <a href="/" class="nav-logo text-lg font-semibold tracking-tight text-text group font-display">
+      <img src="/Michael-Silva.jpg" alt="Logo" class="inline-block w-6 h-6 mr-1 -mt-1" />
+      <span class="text-accent">Michael </span>Silva
+      <span class="inline-block w-0 group-hover:w-1.5 h-1.5 rounded-full bg-accent transition-all duration-300 align-middle ml-0.5"></span>
+    </a>
+
+    <ul class="hidden md:flex items-center gap-8">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class="nav-link relative text-sm text-text-secondary hover:text-text transition-colors duration-300 py-1"
+            data-section={link.href.slice(1)}
+          >
+            {link.label}
+            <span class="absolute bottom-0 left-0 w-0 h-px bg-accent transition-all duration-300"></span>
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <button
+      id="menu-toggle"
+      class="md:hidden relative w-8 h-8 flex flex-col items-center justify-center gap-1.5 cursor-pointer bg-transparent border-none"
+      aria-label="Toggle menu"
+    >
+      <span class="menu-bar w-6 h-px bg-text transition-all duration-300 origin-center"></span>
+      <span class="menu-bar w-4 h-px bg-text transition-all duration-300 origin-center"></span>
+      <span class="menu-bar w-6 h-px bg-text transition-all duration-300 origin-center"></span>
+    </button>
+  </div>
+
+<div
+    id="mobile-menu"
+    class="md:hidden fixed inset-0 h-[100dvh] w-full bg-[rgba(10,10,11,0.98)] backdrop-blur-xl flex flex-col items-center justify-center gap-8 opacity-0 pointer-events-none transition-opacity duration-500 z-40"
+  >
+    {navLinks.map((link, i) => (
+      <a
+        href={link.href}
+        class="mobile-link text-3xl font-light text-text-secondary hover:text-text transition-all duration-300 translate-y-4 opacity-0 font-display"
+        style={`transition-delay: ${i * 0.07}s`}
+      >
+        {link.label}
+      </a>
+    ))}
+  </div>
+</nav>
+
+<style>
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  /* Scrolled state applied via JS */
+  nav.scrolled {
+    background: rgba(10, 10, 11, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  nav.scrolled .max-w-6xl {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .nav-link.active {
+    color: var(--color-text);
+  }
+
+  .nav-link.active span {
+    width: 100%;
+  }
+
+  .nav-link:hover span {
+    width: 100%;
+  }
+
+  /* Mobile menu open */
+  #mobile-menu.open {
+    opacity: 1;
+    pointer-events: auto;
+    z-index: 40;
+  }
+
+  #mobile-menu.open .mobile-link {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Hamburger animation into a perfect 'X' */
+  #menu-toggle.active .menu-bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg); 
+  }
+  #menu-toggle.active .menu-bar:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  #menu-toggle.active .menu-bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg); 
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  const navbar = document.getElementById("navbar")!;
+  const toggle = document.getElementById("menu-toggle")!;
+  const mobileMenu = document.getElementById("mobile-menu")!;
+  const navLinks = document.querySelectorAll(".nav-link");
+  const sections = document.querySelectorAll("section[id]");
+
+  // Reveal navbar after preloader
+  function revealNavbar() {
+    gsap.to(navbar, {
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: "power2.out",
+      delay: 0.3,
+    });
+  }
+
+  window.addEventListener("preloaderComplete", () => {
+    revealNavbar();
+  });
+
+  // Fallback
+  if (!document.getElementById("preloader")) {
+    revealNavbar();
+  }
+
+  // Scroll → glass effect
+  window.addEventListener("scroll", () => {
+    navbar.classList.toggle("scrolled", window.scrollY > 50);
+  });
+
+  // Reusable function to open/close menu
+  const toggleMenu = () => {
+    toggle.classList.toggle("active");
+    mobileMenu.classList.toggle("open");
+    document.body.style.overflow = mobileMenu.classList.contains("open") ? "hidden" : "";
+  };
+
+  // Toggle menu when clicking the hamburger
+  toggle.addEventListener("click", toggleMenu);
+
+  // Close mobile menu on link click + smooth scroll with Lenis
+  mobileMenu.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      toggle.classList.remove("active");
+      mobileMenu.classList.remove("open");
+      document.body.style.overflow = "";
+    });
+  });
+
+  // Desktop nav links — use Lenis for smooth scroll
+  document.querySelectorAll('.nav-link, .nav-logo').forEach((link) => {
+    link.addEventListener("click", (e) => {
+      const href = (link as HTMLAnchorElement).getAttribute("href");
+      if (href && href.startsWith("#")) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target && (window as any).__lenis) {
+          (window as any).__lenis.scrollTo(target, { offset: 0, duration: 1.5 });
+        } else if (target) {
+          target.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    });
+  });
+
+  // Active section tracking
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          navLinks.forEach((link) => {
+            link.classList.toggle(
+              "active",
+              (link as HTMLAnchorElement).dataset.section === entry.target.id
+            );
+          });
+        }
+      });
+    },
+    { rootMargin: "-40% 0px -55% 0px" }
+  );
+
+  sections.forEach((section) => observer.observe(section));
+</script>

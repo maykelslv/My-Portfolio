@@ -1,0 +1,86 @@
+---
+import "../styles/global.css";
+import CursorEffect from "../components/CursorEffect.astro";
+import Preloader from "../components/Preloader.astro";
+
+interface Props {
+	title?: string;
+	description?: string;
+}
+
+const {
+	title = "Michael Silva — Portfolio",
+	description = "Minimalist portfolio showcasing creative development work, projects, and skills.",
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="icon" type="image/jpg" href="/Michael-Silva.jpg" />
+		<meta name="generator" content={Astro.generator} />
+
+		<!-- SEO -->
+		<title>{title}</title>
+		<meta name="description" content={description} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:type" content="website" />
+		<meta name="twitter:card" content="summary_large_image" />
+
+		<!-- Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
+	<body>
+		<Preloader />
+		<CursorEffect />
+		<slot />
+
+		<!-- Global: Lenis smooth scroll + GSAP ScrollTrigger sync -->
+		<script>
+			import Lenis from "lenis";
+			import { gsap } from "gsap";
+			import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+			gsap.registerPlugin(ScrollTrigger);
+
+			// Wait for preloader to complete before initializing smooth scroll
+			function initLenis() {
+				const lenis = new Lenis({
+					duration: 1.2,
+					easing: (t: number) =>
+						Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+					touchMultiplier: 2,
+				});
+
+				// Sync Lenis with GSAP ScrollTrigger
+				lenis.on("scroll", ScrollTrigger.update);
+
+				gsap.ticker.add((time) => {
+					lenis.raf(time * 1000);
+				});
+				gsap.ticker.lagSmoothing(0);
+
+				// Expose lenis globally for nav links
+				(window as any).__lenis = lenis;
+			}
+
+			// Start Lenis after preloader is done
+			window.addEventListener("preloaderComplete", () => {
+				initLenis();
+			});
+
+			// Fallback: if preloader doesn't exist (e.g. on sub-pages)
+			if (!document.getElementById("preloader")) {
+				initLenis();
+			}
+		</script>
+	</body>
+</html>

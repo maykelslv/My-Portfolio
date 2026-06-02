@@ -1,0 +1,629 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Navbar from "../components/Navbar.astro";
+
+interface Project {
+  title: string;
+  role: string;
+  description: string;
+  tags: string[];
+  image?: string;
+  video?: string;
+}
+
+// SET 1: Academic milestones & Multimedia Assignments
+const schoolProjects: Project[] = [
+  {
+    title: "SILAG IoT",
+    role: "Technical Documentation/IoT Developer",
+    description:
+      "An integrated smart inundation-level alert gateway utilizing Raspberry Pi and microcontrollers, developed under a Hybrid Incremental-Kanban workflow.",
+    tags: [
+      "Raspberry Pi",
+      "ESP32",
+      "Ultrasonic Sensor",
+      "LoRa-WAN",
+      "Hardware Integration",
+    ],
+    image: "/IoT.jpg",
+  },
+  {
+    title: "JMJ Events Place and Catering Website",
+    role: "Main Developer",
+    description:
+      "A feature-rich booking and management platform featuring menu-driven selection structures, secure client record storage, and automated reporting.",
+    tags: ["HTML", "CSS", "JavaScript", "MongoDB"],
+    video: "/JMJ-Website-Demo.mp4",
+  },
+  {
+    title: "Multimedia Motion Graphics Project",
+    role: "Motion Graphics Designer",
+    description:
+      "A creative multimedia composition exploring vector animations, visual storytelling, and smooth keyframe interpolation techniques.",
+    tags: ["Adobe After Effects", "Adobe Illustrator"],
+    video: "/Motion-Minds.mp4",
+  },
+  {
+    title: "Motion Graphics for Ethics Task",
+    role: "Motion Graphics Designer",
+    description:
+      "An animated educational presentation analyzing tech-sector ethical theories using vector assets, kinetic typography, and fluid transitions.",
+    tags: ["Alight Motion"],
+    video: "/Ethics.mp4",
+  },
+  {
+    title: "Photoshop Portrait Multimedia",
+    role: "Graphic Designer",
+    description:
+      "A complex digital portrait piece demonstrating advanced masking workflows, texture overlays, and micro-contrast adjustments.",
+    tags: ["Photoshop"],
+    image: "/Selfportrait-Multimedia.jpg",
+  },
+  {
+    title: "Product Poster",
+    role: "Graphic Designer",
+    description:
+      "A commercial-grade advertising layout emphasizing realistic casting shadows, studio lighting simulation, and precise product focal placement.",
+    tags: ["Photoshop"],
+    image: "Product-Poster.png",
+  },
+  {
+    title: "Coffee Poster",
+    role: "Graphic Designer",
+    description:
+      "A minimalist promotional poster leveraging warm color harmonies, depth-of-field separation, and clean typographical hierarchy.",
+    tags: ["Photoshop"],
+    image: "CoffePoster.jpg",
+  },
+  {
+    title: "Clipping Mask Showcase",
+    role: "Graphic Designer",
+    description:
+      "A technical design exploration highlighting the usage of non-destructive clipping containers to weave intricate background patterns inside typography.",
+    tags: ["Photoshop"],
+    image: "ClippingMask.jpg",
+  },
+  {
+    title: "Blending Mode Composition",
+    role: "Graphic Designer",
+    description:
+      "A surreal fantasy photo manipulation composite compiled using multi-layered luminosity blending styles and seamless color-matching curves.",
+    tags: ["Photoshop"],
+    image: "BlendingMode.jpg",
+  },
+];
+
+const personalProjects: Project[] = [
+  {
+    title: "Chasing Pavement (Lyric Typography)",
+    role: "Graphic Designer",
+    description:
+      "A visually immersive web experience showcasing cinematic motovlogs and scooter aesthetics, featuring smooth transitions and video integration.",
+    tags: ["Alight Motion"],
+    video: "/Chasing-Pavement.mp4",
+  },
+  {
+    title: "Blue (Lyric Typography)",
+    role: "Graphic Designer",
+    description:
+      "A visually immersive web experience showcasing cinematic motovlogs and scooter aesthetics, featuring smooth transitions and video integration.",
+    tags: ["Alight Motion"],
+    video: "/Blue.mp4",
+  },
+];
+---
+
+<Layout
+  title="Projects — Michael Silva"
+  description="All projects by Michael Silva — IoT systems, school requirements, and graphic design portfolios."
+>
+  <Navbar />
+  <main>
+    <section
+      class="relative min-h-[60vh] flex items-end overflow-hidden px-8 md:px-24 pb-16"
+    >
+      <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div
+          class="absolute w-[500px] h-[500px] bg-accent rounded-full filter blur-[120px] opacity-[0.04] top-[-100px] right-[-100px]"
+        >
+        </div>
+        <div
+          class="absolute w-[300px] h-[300px] bg-accent-light rounded-full filter blur-[100px] opacity-[0.03] bottom-0 left-[-80px]"
+        >
+        </div>
+        <div
+          class="absolute inset-0 bg-[linear-gradient(rgba(139,92,246,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(139,92,246,0.02)_1px,transparent_1px)] bg-[size:60px_60px]"
+        >
+        </div>
+      </div>
+
+      <div class="relative z-10 max-w-6xl mx-auto w-full">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 text-text-muted hover:text-accent text-sm tracking-wider uppercase transition-colors duration-300 mb-12 page-animate"
+          style="opacity:0;"
+        >
+          <svg
+            class="w-4 h-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M7 16l-4-4m0 0l4-4m-4 4h18"></path>
+          </svg>
+          Back Home
+        </a>
+
+        <div class="section-marker mb-6 page-animate" style="opacity:0;">
+          <span>Portfolio Index</span>
+        </div>
+
+        <div class="overflow-hidden">
+          <h1
+            id="projects-page-title"
+            class="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight font-display leading-[1.05]"
+            style="transform: translateY(110%);"
+          >
+            Selected <span class="text-accent">Works</span>
+          </h1>
+        </div>
+
+        <p
+          class="text-text-secondary text-lg md:text-xl mt-6 max-w-2xl leading-relaxed page-animate"
+          style="opacity:0;"
+        >
+          A curated gallery containing my engineering development track—ranging
+          from IoT infrastructure and core web builds to multimedia motion
+          graphics.
+        </p>
+
+        <div class="page-header-line w-full h-px bg-border mt-12"></div>
+      </div>
+    </section>
+
+    <section class="relative px-8 md:px-24 pt-16 pb-20">
+      <div class="max-w-6xl mx-auto">
+        <div class="mb-20 border-l-2 border-accent pl-6">
+          <h2
+            class="text-xs font-bold tracking-[0.25em] uppercase text-accent-light mb-1"
+          >
+            01 / Academic Track
+          </h2>
+          <p class="text-3xl font-bold text-text font-display tracking-tight">
+            School Projects
+          </p>
+        </div>
+
+        <div class="space-y-28 md:space-y-36">
+          {
+            schoolProjects.map((project, index) => (
+              <article class="project-card group" data-card-index={index}>
+                <div class="project-card-inner grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                  <div
+                    class={`lg:col-span-7 ${index % 2 === 1 ? "lg:order-2" : ""}`}
+                  >
+                    <div class="project-image-wrapper relative overflow-hidden rounded-2xl bg-[#111] aspect-[16/10]">
+                      {project.video ? (
+                        <video
+                          autoplay
+                          loop
+                          muted
+                          playsinline
+                          class="project-img w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-700 ease-out will-change-transform"
+                        >
+                          <source src={project.video} type="video/mp4" />
+                        </video>
+                      ) : (
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          class="project-img w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-700 ease-out will-change-transform"
+                          loading="lazy"
+                        />
+                      )}
+                      <div class="absolute inset-0 bg-gradient-to-t from-bg/40 via-transparent to-transparent opacity-60 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none" />
+                      <div class="absolute bottom-6 right-6 pointer-events-none">
+                        <span class="text-6xl md:text-8xl font-bold text-transparent project-number opacity-10 group-hover:opacity-30 transition-opacity duration-500 font-display">
+                          0{index + 1}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class={`lg:col-span-5 ${index % 2 === 1 ? "lg:order-1" : ""}`}
+                  >
+                    <div class="space-y-5">
+                      <p class="text-xs text-accent-light tracking-[0.25em] uppercase font-medium">
+                        {project.role}
+                      </p>
+                      <h3 class="text-3xl font-bold text-text group-hover:text-accent transition-colors duration-400 font-display leading-tight">
+                        {project.title}
+                      </h3>
+                      <p class="text-base text-text-secondary leading-relaxed">
+                        {project.description}
+                      </p>
+                      <div class="flex flex-wrap gap-2 pt-2">
+                        {project.tags.map((tag) => (
+                          <span class="px-4 py-1.5 bg-bg-elevated text-text-muted text-xs font-medium rounded-full border border-border/50 group-hover:border-border transition-colors duration-300">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="relative px-8 md:px-24 pt-24 pb-32 border-t border-border/10 bg-white/[0.01]"
+    >
+      <div class="max-w-6xl mx-auto">
+        <div class="mb-20 border-l-2 border-purple-500 pl-6">
+          <h2
+            class="text-xs font-bold tracking-[0.25em] uppercase text-purple-400 mb-1"
+          >
+            02 / Independent Ventures
+          </h2>
+          <p class="text-3xl font-bold text-text font-display tracking-tight">
+            Personal Works
+          </p>
+        </div>
+
+        <div class="space-y-28 md:space-y-36">
+          {
+            personalProjects.map((project, index) => (
+              <article class="project-card group" data-card-index={index}>
+                <div class="project-card-inner grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                  <div
+                    class={`lg:col-span-7 ${index % 2 === 1 ? "lg:order-2" : ""}`}
+                  >
+                    <div class="project-image-wrapper relative overflow-hidden rounded-2xl bg-[#111] aspect-[16/10]">
+                      {project.video ? (
+                        <video
+                          autoplay
+                          loop
+                          muted
+                          playsinline
+                          class="project-img w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-700 ease-out will-change-transform"
+                        >
+                          <source src={project.video} type="video/mp4" />
+                        </video>
+                      ) : (
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          class="project-img w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-700 ease-out will-change-transform"
+                          loading="lazy"
+                        />
+                      )}
+                      <div class="absolute inset-0 bg-gradient-to-t from-bg/40 via-transparent to-transparent opacity-60 group-hover:opacity-30 transition-opacity duration-500 pointer-events-none" />
+                      <div class="absolute bottom-6 right-6 pointer-events-none">
+                        <span class="text-6xl md:text-8xl font-bold text-transparent project-number opacity-10 group-hover:opacity-30 transition-opacity duration-500 font-display">
+                          0{index + 1}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    class={`lg:col-span-5 ${index % 2 === 1 ? "lg:order-1" : ""}`}
+                  >
+                    <div class="space-y-5">
+                      <p class="text-xs text-purple-400 tracking-[0.25em] uppercase font-medium">
+                        {project.role}
+                      </p>
+                      <h3 class="text-3xl font-bold text-text group-hover:text-purple-400 transition-colors duration-400 font-display leading-tight">
+                        {project.title}
+                      </h3>
+                      <p class="text-base text-text-secondary leading-relaxed">
+                        {project.description}
+                      </p>
+                      <div class="flex flex-wrap gap-2 pt-2">
+                        {project.tags.map((tag) => (
+                          <span class="px-4 py-1.5 bg-bg-elevated text-text-muted text-xs font-medium rounded-full border border-border/50 group-hover:border-purple-500/30 transition-colors duration-300">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <footer class="py-8 px-8 md:px-24 border-t border-border/20">
+      <div class="max-w-6xl mx-auto text-center">
+        <p class="text-text-muted text-xs tracking-wider">
+          © {new Date().getFullYear()} Michael Silva
+        </p>
+      </div>
+    </footer>
+  </main>
+</Layout>
+
+<style>
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .project-number {
+    -webkit-text-stroke: 1.5px var(--color-text);
+  }
+  .group:hover .project-number {
+    -webkit-text-stroke: 1.5px var(--color-accent);
+  }
+
+  .page-header-line {
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  .project-card-inner {
+    will-change: transform, opacity;
+  }
+
+  .project-image-wrapper:hover .project-img {
+    transform: scale(1.04);
+    transition:
+      transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.7s ease-out;
+  }
+
+  .project-img {
+    transition:
+      transform 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+      opacity 0.7s ease-out;
+  }
+
+  /* Scroll progress bar */
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-accent), var(--color-accent-light));
+    z-index: 100;
+    transform-origin: left;
+    transform: scaleX(0);
+    will-change: transform;
+  }
+
+  /* Section divider reveal */
+  .section-divider {
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+</style>
+
+<div class="scroll-progress" id="scroll-progress"></div>
+
+<script>
+  import { gsap } from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initProjectsPage() {
+    // Scroll progress bar
+    gsap.to("#scroll-progress", {
+      scaleX: 1,
+      ease: "none",
+      scrollTrigger: {
+        trigger: "main",
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.3,
+      },
+    });
+
+    // Page title reveal
+    const title = document.getElementById("projects-page-title");
+    if (title) {
+      gsap.to(title, {
+        y: 0,
+        duration: 1.2,
+        ease: "power3.out",
+        delay: 0.2,
+      });
+    }
+
+    // Page elements staggered entry
+    gsap.to(".page-animate", {
+      opacity: 1,
+      y: 0,
+      duration: 0.9,
+      ease: "power2.out",
+      stagger: 0.1,
+      delay: 0.3,
+    });
+
+    // Header line draw
+    gsap.to(".page-header-line", {
+      scaleX: 1,
+      duration: 1.5,
+      ease: "power2.inOut",
+      delay: 0.6,
+    });
+
+    // Section headers (Academic Track / Personal Works) — scroll reveal
+    document.querySelectorAll(".border-l-2").forEach((header) => {
+      gsap.fromTo(
+        header,
+        { opacity: 0, x: -40 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: header,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        },
+      );
+    });
+
+    // Each project card — enhanced scroll reveal with staggered content
+    gsap.utils.toArray<HTMLElement>(".project-card").forEach((card) => {
+      const inner = card.querySelector(".project-card-inner") as HTMLElement;
+      const image = card.querySelector(".project-image-wrapper") as HTMLElement;
+      const img = card.querySelector(".project-img") as HTMLElement;
+      const role = card.querySelector("p.text-xs") as HTMLElement;
+      const titleEl = card.querySelector("h3") as HTMLElement;
+      const desc = card.querySelector("p.text-base") as HTMLElement;
+      const tags = card.querySelectorAll(".flex.flex-wrap > span");
+
+      if (!inner) return;
+
+      // Card container: scale up + fade in
+      gsap.fromTo(
+        inner,
+        { opacity: 0, y: 120, scale: 0.88 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.4,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 85%",
+            toggleActions: "play none none none",
+          },
+        },
+      );
+
+      // Image parallax
+      if (img) {
+        gsap.fromTo(
+          img,
+          { y: -50, scale: 1.12 },
+          {
+            y: 50,
+            scale: 1,
+            ease: "none",
+            scrollTrigger: {
+              trigger: card,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 0.6,
+            },
+          },
+        );
+      }
+
+      // Image wrapper clip reveal
+      if (image) {
+        gsap.fromTo(
+          image,
+          { clipPath: "inset(20% 0% 20% 0%)" },
+          {
+            clipPath: "inset(0% 0% 0% 0%)",
+            duration: 1.6,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 82%",
+              toggleActions: "play none none none",
+            },
+          },
+        );
+      }
+
+      // Staggered text content reveals via timeline
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: card,
+          start: "top 78%",
+          toggleActions: "play none none none",
+        },
+      });
+
+      if (role) {
+        tl.fromTo(
+          role,
+          { opacity: 0, x: -30 },
+          { opacity: 1, x: 0, duration: 0.7, ease: "power2.out" },
+          0.2,
+        );
+      }
+
+      if (titleEl) {
+        tl.fromTo(
+          titleEl,
+          { opacity: 0, y: 40, skewY: 2 },
+          { opacity: 1, y: 0, skewY: 0, duration: 0.9, ease: "power3.out" },
+          0.35,
+        );
+      }
+
+      if (desc) {
+        tl.fromTo(
+          desc,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" },
+          0.55,
+        );
+      }
+
+      if (tags.length > 0) {
+        tl.fromTo(
+          tags,
+          { opacity: 0, y: 15, scale: 0.9 },
+          {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.5,
+            ease: "back.out(1.4)",
+            stagger: 0.06,
+          },
+          0.7,
+        );
+      }
+
+      // Number overlay parallax
+      const num = card.querySelector(".project-number") as HTMLElement;
+      if (num) {
+        gsap.fromTo(
+          num,
+          { y: 30 },
+          {
+            y: -30,
+            ease: "none",
+            scrollTrigger: {
+              trigger: card,
+              start: "top bottom",
+              end: "bottom top",
+              scrub: 0.4,
+            },
+          },
+        );
+      }
+    });
+  }
+
+  window.addEventListener("preloaderComplete", () => {
+    setTimeout(initProjectsPage, 100);
+  });
+
+  if (!document.getElementById("preloader")) {
+    initProjectsPage();
+  }
+</script>
+

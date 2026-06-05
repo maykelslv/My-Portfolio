@@ -48,7 +48,7 @@ const aboutParagraphs = [
         {
           aboutParagraphs.map((para, idx) => (
             <p
-              class="about-paragraph text-lg md:text-xl leading-relaxed text-justify fade-up about-animate"
+              class="about-paragraph text-lg md:text-xl leading-relaxed"
               data-paragraph-index={idx}
             >
               {para.split(" ").map((word) => (
@@ -170,7 +170,6 @@ const aboutParagraphs = [
     -webkit-hyphens: auto;
     -ms-hyphens: auto;
     hyphens: auto;
-    text-align-last: left;
   }
 
   .about-paragraph .word.active {

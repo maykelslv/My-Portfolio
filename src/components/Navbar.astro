@@ -14,7 +14,7 @@ const navLinks = [
       <span class="text-accent">Michael </span>Silva
       <span class="inline-block w-0 group-hover:w-1.5 h-1.5 rounded-full bg-accent transition-all duration-300 align-middle ml-0.5"></span>
     </a>
-
+  
     <ul class="hidden md:flex items-center gap-8">
       {navLinks.map((link) => (
         <li>
@@ -115,88 +115,111 @@ const navLinks = [
 <script>
   import { gsap } from "gsap";
 
-  const navbar = document.getElementById("navbar")!;
-  const toggle = document.getElementById("menu-toggle")!;
-  const mobileMenu = document.getElementById("mobile-menu")!;
-  const navLinks = document.querySelectorAll(".nav-link");
-  const sections = document.querySelectorAll("section[id]");
+  document.addEventListener("DOMContentLoaded", () => {
+    const navbar = document.getElementById("navbar");
+    const toggle = document.getElementById("menu-toggle");
+    const mobileMenu = document.getElementById("mobile-menu");
+    const navLinks = document.querySelectorAll(".nav-link");
+    const sections = document.querySelectorAll("section[id]");
 
-  // Reveal navbar after preloader
-  function revealNavbar() {
-    gsap.to(navbar, {
-      opacity: 1,
-      y: 0,
-      duration: 0.8,
-      ease: "power2.out",
-      delay: 0.3,
+    // Reveal navbar after preloader
+    function revealNavbar() {
+      if (!navbar) return;
+      gsap.to(navbar, {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: "power2.out",
+        delay: 0.3,
+      });
+    }
+
+    window.addEventListener("preloaderComplete", () => {
+      revealNavbar();
     });
-  }
 
-  window.addEventListener("preloaderComplete", () => {
-    revealNavbar();
-  });
+    // Fallback
+    if (!document.getElementById("preloader")) {
+      revealNavbar();
+    }
 
-  // Fallback
-  if (!document.getElementById("preloader")) {
-    revealNavbar();
-  }
-
-  // Scroll → glass effect
-  window.addEventListener("scroll", () => {
-    navbar.classList.toggle("scrolled", window.scrollY > 50);
-  });
-
-  // Reusable function to open/close menu
-  const toggleMenu = () => {
-    toggle.classList.toggle("active");
-    mobileMenu.classList.toggle("open");
-    document.body.style.overflow = mobileMenu.classList.contains("open") ? "hidden" : "";
-  };
-
-  // Toggle menu when clicking the hamburger
-  toggle.addEventListener("click", toggleMenu);
-
-  // Close mobile menu on link click + smooth scroll with Lenis
-  mobileMenu.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", (e) => {
-      toggle.classList.remove("active");
-      mobileMenu.classList.remove("open");
-      document.body.style.overflow = "";
+    // Scroll → glass effect
+    window.addEventListener("scroll", () => {
+      if (!navbar) return;
+      navbar.classList.toggle("scrolled", window.scrollY > 50);
     });
-  });
 
-  // Desktop nav links — use Lenis for smooth scroll
-  document.querySelectorAll('.nav-link, .nav-logo').forEach((link) => {
-    link.addEventListener("click", (e) => {
-      const href = (link as HTMLAnchorElement).getAttribute("href");
-      if (href && href.startsWith("#")) {
-        e.preventDefault();
-        const target = document.querySelector(href);
-        if (target && (window as any).__lenis) {
-          (window as any).__lenis.scrollTo(target, { offset: 0, duration: 1.5 });
-        } else if (target) {
-          target.scrollIntoView({ behavior: "smooth" });
+    // Reusable function to open/close menu
+    const toggleMenu = () => {
+      if (!toggle || !mobileMenu) return;
+      toggle.classList.toggle("active");
+      mobileMenu.classList.toggle("open");
+      document.body.style.overflow = mobileMenu.classList.contains("open") ? "hidden" : "";
+    };
+
+    // Toggle menu when clicking the hamburger
+    toggle?.addEventListener("click", toggleMenu);
+
+    // Close mobile menu on link click + navigate to home when clicking anchors from other pages
+    mobileMenu?.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const href = (link as HTMLAnchorElement).getAttribute("href");
+        if (href && href.startsWith("#") && window.location.pathname !== "/") {
+          // navigate to home with hash so index can scroll to the section
+          window.location.href = `/${href}`;
+          return;
         }
-      }
+        toggle?.classList.remove("active");
+        mobileMenu.classList.remove("open");
+        document.body.style.overflow = "";
+      });
     });
-  });
 
-  // Active section tracking
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          navLinks.forEach((link) => {
-            link.classList.toggle(
-              "active",
-              (link as HTMLAnchorElement).dataset.section === entry.target.id
-            );
-          });
+    // Desktop nav links — use Lenis for smooth scroll, or navigate to home when clicking anchors from other pages
+    document.querySelectorAll('.nav-link, .nav-logo').forEach((link) => {
+      link.addEventListener("click", (e) => {
+        const href = (link as HTMLAnchorElement).getAttribute("href");
+        if (href && href.startsWith("#")) {
+          if (window.location.pathname !== "/") {
+            e.preventDefault();
+            window.location.href = `/${href}`;
+            return;
+          }
+          e.preventDefault();
+          const target = document.querySelector(href);
+          if (target && (window as any).__lenis) {
+            (window as any).__lenis.scrollTo(target, { offset: 0, duration: 1.5 });
+          } else if (target) {
+            target.scrollIntoView({ behavior: "smooth" });
+          }
         }
       });
-    },
-    { rootMargin: "-40% 0px -55% 0px" }
-  );
+    });
 
-  sections.forEach((section) => observer.observe(section));
+    // Active section tracking
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            navLinks.forEach((link) => {
+              link.classList.toggle(
+                "active",
+                (link as HTMLAnchorElement).dataset.section === entry.target.id
+              );
+            });
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px" }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    // If not on home, set active based on pathname (e.g., /projects)
+    if (window.location.pathname.startsWith("/projects")) {
+      navLinks.forEach((link) => {
+        link.classList.toggle("active", (link as HTMLAnchorElement).getAttribute("href") === "/projects");
+      });
+    }
+  });
 </script>

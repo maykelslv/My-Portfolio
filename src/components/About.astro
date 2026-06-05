@@ -163,6 +163,16 @@ const aboutParagraphs = [
     will-change: color;
   }
 
+  /* Ensure paragraphs are fully justified with hyphenation */
+  .about-paragraph {
+    text-align: justify;
+    text-justify: inter-word;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    text-align-last: left;
+  }
+
   .about-paragraph .word.active {
     color: var(--color-text-secondary);
   }

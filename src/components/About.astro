@@ -52,7 +52,7 @@ const aboutParagraphs = [
               data-paragraph-index={idx}
             >
               {para.split(" ").map((word) => (
-                <span class="word">{word}</span>
+                <span class="word">{word} </span>
               ))}
             </p>
           ))
@@ -156,8 +156,7 @@ const aboutParagraphs = [
 
   /* Word reveal styling */
   .about-paragraph .word {
-    display: inline-block;
-    margin-right: 0.3em;
+    display: inline;
     color: var(--color-text-muted);
     transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     will-change: color;
@@ -170,6 +169,7 @@ const aboutParagraphs = [
     -webkit-hyphens: auto;
     -ms-hyphens: auto;
     hyphens: auto;
+    word-spacing: normal;
   }
 
   .about-paragraph .word.active {

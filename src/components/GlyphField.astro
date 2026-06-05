@@ -1,0 +1,271 @@
+<!-- Magnetic Glyph Field — full hero coverage, code symbols react to cursor -->
+<div id="glyph-field" aria-hidden="true">
+  <canvas id="glyph-canvas"></canvas>
+</div>
+
+<style>
+  #glyph-field {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+  }
+
+  #glyph-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+</style>
+
+<script>
+  function initGlyphField() {
+    const field  = document.getElementById('glyph-field')  as HTMLElement | null;
+    const canvas = document.getElementById('glyph-canvas') as HTMLCanvasElement | null;
+    if (!field || !canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // ── Glyph pool ────────────────────────────────────────────────
+    const GLYPHS = [
+      '{ }', '/>', '</', '[ ]', '=>', '( )',
+      '&&',  '||', '**', '::', '??', '!==',
+      '✦', '◈', '⬡', '△', '◻', '⟨ ⟩', '◎',
+      'fn()',  'px',  'rem', 'var', 'if',
+      'UI',   'UX',  'CSS', 'API', 'git',
+      '0x1F', '#id', '.cls','->',  '~/.',
+      '01',   '10',  '00',  '11',
+    ];
+
+    // ── Physics config ────────────────────────────────────────────
+    const COUNT        = 55;   // total glyphs across full hero
+    const ATTRACT_DIST = 200;  // cursor starts pulling
+    const REPEL_DIST   = 90;   // cursor pushes
+    const SPRING       = 0.055;
+    const FRICTION     = 0.80;
+    const MAGNET       = 0.20;
+    const REPEL_FORCE  = 0.60;
+
+    // ── Canvas resize (respects pixel ratio) ─────────────────────
+    function resize() {
+      const dpr = window.devicePixelRatio || 1;
+      canvas!.width  = field!.offsetWidth  * dpr;
+      canvas!.height = field!.offsetHeight * dpr;
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', () => { resize(); redistributeGlyphs(); });
+
+    // ── Glyph type ────────────────────────────────────────────────
+    interface Glyph {
+      label:      string;
+      x:  number; y:  number;   // live position
+      ox: number; oy: number;   // rest position
+      baseOy: number;           // original Y for idle float
+      vx: number; vy: number;
+      size:       number;
+      baseAlpha:  number;
+      driftSpeed: number;
+      driftPhase: number;
+      leftZone:   boolean;      // true = left 50% → more subtle
+      color:      string;
+      rotation:   number;
+      rotVel:     number;
+    }
+
+    const fieldW = () => field!.offsetWidth;
+    const fieldH = () => field!.offsetHeight;
+
+    const COLORS = [
+      'rgba(139,92,246,',   // accent
+      'rgba(167,139,250,',  // accent-light
+      'rgba(196,181,253,',  // softer violet
+      'rgba(109,40,217,',   // deeper purple
+      'rgba(221,214,254,',  // near-white violet
+    ];
+
+    function makeGlyph(i: number): Glyph {
+      const W = fieldW();
+      const H = fieldH();
+
+      // Decide zone — spread glyphs with slight right bias
+      // Left 50%: sparser (fewer glyphs land there) and lower alpha
+      const rand = Math.random();
+      // 35% chance left zone, 65% right zone
+      const leftZone = rand < 0.35;
+
+      let ox: number;
+      if (leftZone) {
+        // Avoid very centre-left where headline sits → margins
+        const sub = Math.random();
+        if (sub < 0.5) {
+          ox = 20 + Math.random() * (W * 0.12);           // far-left strip
+        } else {
+          ox = W * 0.40 + Math.random() * (W * 0.10);     // just right of text block
+        }
+      } else {
+        ox = W * 0.52 + Math.random() * (W * 0.44);       // right half
+      }
+
+      const oy = 30 + Math.random() * (H * 0.92);
+      const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      // Left zone glyphs are much more subtle
+      const baseAlpha = leftZone
+        ? 0.04 + Math.random() * 0.07
+        : 0.10 + Math.random() * 0.22;
+
+      return {
+        label: GLYPHS[Math.floor(Math.random() * GLYPHS.length)],
+        x: ox, y: oy,
+        ox, oy,
+        baseOy: oy,
+        vx: 0, vy: 0,
+        size: leftZone ? 9 + Math.random() * 7 : 11 + Math.random() * 11,
+        baseAlpha,
+        driftSpeed: 0.003 + Math.random() * 0.005,
+        driftPhase: Math.random() * Math.PI * 2,
+        leftZone,
+        color,
+        rotation: (Math.random() - 0.5) * 0.6,
+        rotVel:   (Math.random() - 0.5) * 0.003,
+      };
+    }
+
+    let glyphs: Glyph[] = Array.from({ length: COUNT }, (_, i) => makeGlyph(i));
+
+    function redistributeGlyphs() {
+      glyphs = Array.from({ length: COUNT }, (_, i) => makeGlyph(i));
+    }
+
+    // ── Mouse (hero-section-local coords) ────────────────────────
+    let mouseX = -9999;
+    let mouseY = -9999;
+
+    document.addEventListener('mousemove', (e) => {
+      const rect = field!.getBoundingClientRect();
+      mouseX = e.clientX - rect.left;
+      mouseY = e.clientY - rect.top;
+    });
+
+    document.addEventListener('mouseleave', () => {
+      mouseX = -9999;
+      mouseY = -9999;
+    });
+
+    // ── Render loop ───────────────────────────────────────────────
+    let time = 0;
+    let raf: number;
+
+    function draw() {
+      const W = fieldW();
+      const H = fieldH();
+      ctx!.clearRect(0, 0, W, H);
+      time += 0.016;
+
+      for (const g of glyphs) {
+        // Gentle idle vertical float on origin
+        g.oy = g.baseOy + Math.sin(time * g.driftSpeed * 80 + g.driftPhase) * 8;
+
+        const dx   = mouseX - g.x;
+        const dy   = mouseY - g.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
+
+        if (dist < REPEL_DIST) {
+          const force = (1 - dist / REPEL_DIST) * REPEL_FORCE;
+          g.vx -= (dx / dist) * force * 9;
+          g.vy -= (dy / dist) * force * 9;
+        } else if (dist < ATTRACT_DIST) {
+          const t     = (dist - REPEL_DIST) / (ATTRACT_DIST - REPEL_DIST);
+          const force = (1 - t) * MAGNET;
+          g.vx += (dx / dist) * force * 4;
+          g.vy += (dy / dist) * force * 4;
+        }
+
+        // Spring → rest
+        g.vx += (g.ox - g.x) * SPRING;
+        g.vy += (g.oy - g.y) * SPRING;
+        g.vx *= FRICTION;
+        g.vy *= FRICTION;
+        g.x  += g.vx;
+        g.y  += g.vy;
+
+        g.rotation += g.rotVel;
+
+        // Alpha: idle pulse + cursor proximity boost
+        const pulse     = Math.sin(time * g.driftSpeed * 130 + g.driftPhase) * g.baseAlpha * 0.45;
+        const proximity = Math.max(0, 1 - dist / ATTRACT_DIST);
+        // Left-zone glyphs get a smaller proximity boost so they don't overpower text
+        const boost     = proximity * (g.leftZone ? 0.2 : 0.55);
+        const finalAlpha = Math.min(g.leftZone ? 0.35 : 0.90, g.baseAlpha + pulse + boost);
+
+        ctx!.save();
+        ctx!.translate(g.x, g.y);
+        ctx!.rotate(g.rotation);
+
+        ctx!.font        = `${Math.round(g.size)}px 'Outfit', 'Inter', monospace`;
+        ctx!.fillStyle   = `${g.color}${finalAlpha.toFixed(3)})`;
+        ctx!.textAlign   = 'center';
+        ctx!.textBaseline = 'middle';
+
+        // Glow on close approach
+        if (proximity > 0.25 && !g.leftZone) {
+          ctx!.shadowColor = `${g.color}1)`;
+          ctx!.shadowBlur  = 14 * proximity;
+        } else if (proximity > 0.5 && g.leftZone) {
+          ctx!.shadowColor = `${g.color}0.5)`;
+          ctx!.shadowBlur  = 6 * proximity;
+        } else {
+          ctx!.shadowBlur = 0;
+        }
+
+        ctx!.fillText(g.label, 0, 0);
+        ctx!.restore();
+      }
+
+      // ── Faint connection lines between close glyphs ───────────
+      ctx!.lineWidth = 0.4;
+      for (let i = 0; i < glyphs.length; i++) {
+        for (let j = i + 1; j < glyphs.length; j++) {
+          const a = glyphs[i];
+          const b = glyphs[j];
+          const dx   = a.x - b.x;
+          const dy   = a.y - b.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const maxConn = 110;
+          if (dist < maxConn) {
+            // Lines between two left-zone glyphs are even more subtle
+            const bothLeft   = a.leftZone && b.leftZone;
+            const maxAlpha   = bothLeft ? 0.025 : 0.07;
+            const lineAlpha  = (1 - dist / maxConn) * maxAlpha;
+            ctx!.strokeStyle = `rgba(139,92,246,${lineAlpha.toFixed(4)})`;
+            ctx!.beginPath();
+            ctx!.moveTo(a.x, a.y);
+            ctx!.lineTo(b.x, b.y);
+            ctx!.stroke();
+          }
+        }
+      }
+
+      raf = requestAnimationFrame(draw);
+    }
+
+    draw();
+
+    document.addEventListener('astro:before-swap', () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener('resize', () => {});
+    });
+  }
+
+  window.addEventListener('preloaderComplete', () => {
+    setTimeout(initGlyphField, 600);
+  });
+
+  if (!document.getElementById('preloader')) {
+    initGlyphField();
+  }
+</script>
